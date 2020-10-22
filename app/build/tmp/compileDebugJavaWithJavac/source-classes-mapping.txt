@@ -1,0 +1,11 @@
+com/cloudfridge/SecondFragment.java
+ com.cloudfridge.SecondFragment
+ com.cloudfridge.SecondFragment$1
+com/cloudfridge/FirstFragment.java
+ com.cloudfridge.FirstFragment
+ com.cloudfridge.FirstFragment$1
+com/cloudfridge/MainActivity.java
+ com.cloudfridge.MainActivity
+ com.cloudfridge.MainActivity$1
+com/cloudfridge/BuildConfig.java
+ com.cloudfridge.BuildConfig
