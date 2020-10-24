@@ -1492,6 +1492,8 @@ id beginning
 id blocking
 id bottom
 id buttonPanel
+id buttonSignIn
+id buttonSignUp
 id button_first
 id button_second
 id cancel_button
@@ -1529,6 +1531,8 @@ id dimensions
 id direct
 id disableHome
 id dropdown_menu
+id editTextPassword
+id editTextUsername
 id edit_query
 id end
 id enterAlways
@@ -1536,7 +1540,6 @@ id enterAlwaysCollapsed
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
-id fab
 id fade
 id fill
 id fill_horizontal
@@ -1785,7 +1788,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
-layout activity_main
+layout activity_login
 layout content_main
 layout custom_dialog
 layout design_bottom_navigation_item

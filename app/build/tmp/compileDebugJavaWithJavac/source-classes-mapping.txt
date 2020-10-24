@@ -4,8 +4,9 @@ com/cloudfridge/SecondFragment.java
 com/cloudfridge/FirstFragment.java
  com.cloudfridge.FirstFragment
  com.cloudfridge.FirstFragment$1
-com/cloudfridge/MainActivity.java
- com.cloudfridge.MainActivity
- com.cloudfridge.MainActivity$1
 com/cloudfridge/BuildConfig.java
  com.cloudfridge.BuildConfig
+com/cloudfridge/LoginActivity.java
+ com.cloudfridge.LoginActivity
+ com.cloudfridge.LoginActivity$1
+ com.cloudfridge.LoginActivity$2
