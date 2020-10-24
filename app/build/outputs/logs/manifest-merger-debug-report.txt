@@ -77,14 +77,14 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\Gr
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:6:9-35
 	android:theme
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:11:9-49
-activity#com.cloudfridge.MainActivity
+activity#com.cloudfridge.LoginActivity
 ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:12:9-21:20
 	android:label
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:14:13-45
 	android:theme
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:15:13-65
 	android:name
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:13:13-41
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:13:13-42
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
 ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:16:13-20:29
 action#android.intent.action.MAIN
