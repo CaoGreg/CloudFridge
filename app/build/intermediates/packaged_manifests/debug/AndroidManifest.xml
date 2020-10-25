@@ -25,6 +25,10 @@
         android:testOnly="true"
         android:theme="@style/Theme.CloudFridge" >
         <activity
+            android:name="com.cloudfridge.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.CloudFridge.NoActionBar" />
+        <activity
             android:name="com.cloudfridge.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.CloudFridge.NoActionBar" >

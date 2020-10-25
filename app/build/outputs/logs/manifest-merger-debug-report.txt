@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 MERGED from [androidx.multidex:multidex:2.0.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\50d7c09e9636fb6410096492af455428\multidex-2.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-ui:2.2.2] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\13c762a058e2ddbc0e27a395e695d83d\navigation-ui-2.2.2\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.material:material:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\7ccfa0abf23251e0a906655f92c8d892\material-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -49,25 +49,25 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] C:\Users\Greg\.gr
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\801842852ec847684f12140865efd576\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.firebase:protolite-well-known-types:17.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\ac411d41ba44e897fc383a0c096cb75f\jetified-protolite-well-known-types-17.1.0\AndroidManifest.xml:2:1-11:12
 MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:2:1-13:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
-INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
+INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 	package
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:3:5-30
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-24:12
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 		INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:11-69
 application
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:5:5-22:19
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:5:5-26:19
 MERGED from [com.google.android.material:material:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\7ccfa0abf23251e0a906655f92c8d892\material-1.1.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\7ccfa0abf23251e0a906655f92c8d892\material-1.1.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\4eabadb7c20ce3a6d3c15fb9e622705a\constraintlayout-1.1.3\AndroidManifest.xml:9:5-20
@@ -104,24 +104,32 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\Gr
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:6:9-35
 	android:theme
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:11:9-49
-activity#com.cloudfridge.LoginActivity
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:12:9-21:20
+activity#com.cloudfridge.MainActivity
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:12:9-15:77
 	android:label
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:14:13-45
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:14:13-56
 	android:theme
 		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:15:13-65
 	android:name
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:13:13-42
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:13:13-41
+activity#com.cloudfridge.LoginActivity
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:16:9-25:20
+	android:label
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:18:13-45
+	android:theme
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:19:13-65
+	android:name
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:17:13-42
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:16:13-20:29
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:20:13-24:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:17:17-69
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:21:17-69
 	android:name
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:17:25-66
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:21:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:19:17-77
+ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:23:17-77
 	android:name
-		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:19:27-74
+		ADDED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:23:27-74
 uses-sdk
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
