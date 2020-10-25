@@ -44,12 +44,12 @@
         "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
-    },
-    {
         "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_launcher_background.png.flat",
         "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\generated\\res\\pngs\\debug\\drawable-hdpi\\ic_launcher_background.png"
+    },
+    {
+        "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
     },
     {
         "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21_ic_launcher_background.xml.flat",
@@ -88,12 +88,12 @@
         "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher_background.png.flat",
-        "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\generated\\res\\pngs\\debug\\drawable-xxhdpi\\ic_launcher_background.png"
-    },
-    {
         "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_login.xml.flat",
         "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\src\\main\\res\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher_background.png.flat",
+        "source": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\generated\\res\\pngs\\debug\\drawable-xxhdpi\\ic_launcher_background.png"
     },
     {
         "merged": "C:\\Users\\Greg\\AndroidStudioProjects\\CloudFridge\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_second.xml.flat",
