@@ -1,6 +1,7 @@
 package com.cloudfridge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -10,9 +11,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
+import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     public void loginUser(String username, String password){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Users")
@@ -83,23 +88,30 @@ public class LoginActivity extends AppCompatActivity {
                                 if (document.getId().equals(username)) {
                                     if (password.equals(document.get("password").toString())) {
                                         Log.d(TAG,"Logging in user " + username);
-                                        //TODO: Store user info in Shared preferences
+                                        db.terminate();
+                                        addUserSharedPreferences(username, password);
+
+                                        // Go to MainActivity
                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        intent.putExtra("username", username);
                                         startActivity(intent);
                                     }
                                     else {
                                         Toast.makeText(LoginActivity.this, "Incorrect Password.\nPlease try again.", Toast.LENGTH_SHORT).show();
                                     }
+                                    return;
                                 } else {
                                     Log.d(TAG,document.getId() + " => " + document.getData());
                                 }
                             }
                         } else {
                             Log.w(TAG, "Error getting documents", task.getException());
+                            return;
                         }
                     }
                 });
     }
+
 
     public void registerUser(String username, String password){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -122,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-        // Add new user
+        // Add new user to database
         Map<String, Object> newUser = new HashMap<>();
         newUser.put("password", password);
 
@@ -131,8 +143,43 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
 
-        //TODO: Store user info in Shared preferences
+        db.terminate();
+
+        addUserSharedPreferences(username,password);
+
+        // Go to main activity
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
+    }
+
+
+    public void addUserSharedPreferences(String username, String password){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Map<String,Object>> data = new HashMap<>();
+        Log.d(TAG, "hello cunt");
+        db.collection("Users/" + username + "/fridge_contents").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                data.put(document.getId(),document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting subcollection.", task.getException());
+                        }
+                    }
+                });
+
+        db.terminate();
+
+        UserData userData = new UserData(password, data);
+
+        SharedPreferences prefs = getSharedPreferences("user_data",MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = gson.toJson(userData);
+        prefs.edit().putString(username, json).commit();
     }
 }

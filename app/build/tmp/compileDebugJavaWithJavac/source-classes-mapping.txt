@@ -1,3 +1,5 @@
+com/cloudfridge/UserData.java
+ com.cloudfridge.UserData
 com/cloudfridge/MainActivity.java
  com.cloudfridge.MainActivity
  com.cloudfridge.MainActivity$1
@@ -7,5 +9,6 @@ com/cloudfridge/LoginActivity.java
  com.cloudfridge.LoginActivity$2
  com.cloudfridge.LoginActivity$3
  com.cloudfridge.LoginActivity$4
+ com.cloudfridge.LoginActivity$5
 com/cloudfridge/BuildConfig.java
  com.cloudfridge.BuildConfig

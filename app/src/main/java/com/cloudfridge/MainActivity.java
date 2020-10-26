@@ -1,19 +1,25 @@
 package com.cloudfridge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,16 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // To retrieve the shared preferences
+        SharedPreferences prefs = getSharedPreferences("user_data",MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(getIntent().getStringExtra("username"), "");
+        UserData userData = gson.fromJson(json, UserData.class);
+
+        for(Map.Entry<String, Map<String,Object>> entry: userData.fridge_contents.entrySet()) {
+            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
     }
 
     @Override
@@ -52,7 +68,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_logout) {
-            //TODO: Change shared preferences
+            SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(getIntent().getStringExtra("username"));
+            editor.commit();
+
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
