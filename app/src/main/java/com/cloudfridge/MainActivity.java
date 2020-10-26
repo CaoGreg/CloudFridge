@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_data",MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(getIntent().getStringExtra("username"), "");
+        Log.d(TAG, "JSON" + json);
         UserData userData = gson.fromJson(json, UserData.class);
 
-        for(Map.Entry<String, Map<String,Object>> entry: userData.fridge_contents.entrySet()) {
-            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
-        }
+//        for(Map.Entry<String, Map<String,Object>> entry: userData.fridge_contents.entrySet()) {
+//            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
+//        }
     }
 
     @Override
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(getIntent().getStringExtra("username"));
             editor.commit();
+
+            Log.d(TAG, "Logging out user " + getIntent().getStringExtra("username"));
 
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);

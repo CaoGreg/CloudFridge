@@ -12,6 +12,7 @@ MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\Greg\.gr
 MERGED from [androidx.navigation:navigation-fragment:2.2.2] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\1919ec344eeb9185694aee1f21366459\navigation-fragment-2.2.2\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.firebase:firebase-auth:19.4.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\0f458b425841e757dac703a4529e92e6\jetified-firebase-auth-19.4.0\AndroidManifest.xml:17:1-42:12
 MERGED from [com.google.firebase:firebase-firestore:21.7.1] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\0dc73a9a572100ab7c7c01ea02337ac0\jetified-firebase-firestore-21.7.1\AndroidManifest.xml:2:1-26:12
+MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:2:1-13:12
 MERGED from [androidx.appcompat:appcompat-resources:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\93abca86d8fdbe437eca359ff85c45a7\jetified-appcompat-resources-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\cf0270bc32eae3add2f8a8bae449b645\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\8afd8ba613162a5df1a93e876cb005f7\coordinatorlayout-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -48,7 +49,6 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\Greg\.gradle\
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\ef4a149da0cd6df8b7b8ca35d4a0316d\lifecycle-livedata-core-2.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\801842852ec847684f12140865efd576\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.firebase:protolite-well-known-types:17.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\ac411d41ba44e897fc383a0c096cb75f\jetified-protolite-well-known-types-17.1.0\AndroidManifest.xml:2:1-11:12
-MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:2:1-13:12
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml:2:1-28:12
@@ -150,6 +150,8 @@ MERGED from [com.google.firebase:firebase-auth:19.4.0] C:\Users\Greg\.gradle\cac
 MERGED from [com.google.firebase:firebase-auth:19.4.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\0f458b425841e757dac703a4529e92e6\jetified-firebase-auth-19.4.0\AndroidManifest.xml:21:5-44
 MERGED from [com.google.firebase:firebase-firestore:21.7.1] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\0dc73a9a572100ab7c7c01ea02337ac0\jetified-firebase-firestore-21.7.1\AndroidManifest.xml:7:5-9:41
 MERGED from [com.google.firebase:firebase-firestore:21.7.1] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\0dc73a9a572100ab7c7c01ea02337ac0\jetified-firebase-firestore-21.7.1\AndroidManifest.xml:7:5-9:41
+MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:7:5-9:41
+MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.appcompat:appcompat-resources:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\93abca86d8fdbe437eca359ff85c45a7\jetified-appcompat-resources-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat-resources:1.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\93abca86d8fdbe437eca359ff85c45a7\jetified-appcompat-resources-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\cf0270bc32eae3add2f8a8bae449b645\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
@@ -222,8 +224,6 @@ MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\Greg\.gradle\caches
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\801842852ec847684f12140865efd576\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.firebase:protolite-well-known-types:17.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\ac411d41ba44e897fc383a0c096cb75f\jetified-protolite-well-known-types-17.1.0\AndroidManifest.xml:7:5-9:41
 MERGED from [com.google.firebase:protolite-well-known-types:17.1.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\ac411d41ba44e897fc383a0c096cb75f\jetified-protolite-well-known-types-17.1.0\AndroidManifest.xml:7:5-9:41
-MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:7:5-9:41
-MERGED from [io.grpc:grpc-android:1.28.0] C:\Users\Greg\.gradle\caches\transforms-2\files-2.1\af1aceeddfddfe8433b60faf6ef2e76e\jetified-grpc-android-1.28.0\AndroidManifest.xml:7:5-9:41
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 INJECTED from C:\Users\Greg\AndroidStudioProjects\CloudFridge\app\src\main\AndroidManifest.xml
 	android:targetSdkVersion

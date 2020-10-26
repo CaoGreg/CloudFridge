@@ -37,6 +37,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void loginUser(String username, String password){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         db.collection("Users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if (document.getId().equals(username)) {
                                     if (password.equals(document.get("password").toString())) {
                                         Log.d(TAG,"Logging in user " + username);
-                                        db.terminate();
+
                                         addUserSharedPreferences(username, password);
 
                                         // Go to MainActivity
@@ -114,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void registerUser(String username, String password){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         // Check if user already exists
         db.collection("Users")
                 .get()
@@ -143,8 +144,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
 
-        db.terminate();
-
         addUserSharedPreferences(username,password);
 
         // Go to main activity
@@ -155,9 +154,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void addUserSharedPreferences(String username, String password){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         Map<String, Map<String,Object>> data = new HashMap<>();
-        Log.d(TAG, "hello cunt");
+
         db.collection("Users/" + username + "/fridge_contents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -170,16 +169,17 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Error getting subcollection.", task.getException());
                         }
+
+                        Log.d(TAG,"data: " + data.toString());
+
+                        UserData userData = new UserData(password, data);
+
+                        SharedPreferences prefs = getSharedPreferences("user_data",MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(userData);
+                        prefs.edit().putString(username, json).commit();
+                        Log.d(TAG, "JSON object: " + json);
                     }
                 });
-
-        db.terminate();
-
-        UserData userData = new UserData(password, data);
-
-        SharedPreferences prefs = getSharedPreferences("user_data",MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = gson.toJson(userData);
-        prefs.edit().putString(username, json).commit();
     }
 }
