@@ -87,20 +87,26 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.getId().equals(username)) {
-                                    if (password.equals(document.get("password").toString())) {
-                                        Log.d(TAG,"Logging in user " + username);
+                                    AESCrypt aesCrypt = new AESCrypt();
+                                    try {
+                                        String passwordHash = aesCrypt.encrypt(password);
+                                        if (passwordHash.equals(document.get("password").toString())) {
+                                            Log.d(TAG,"Logging in user " + username);
 
-                                        addUserSharedPreferences(username, password);
+                                            addUserSharedPreferences(username, password);
 
-                                        // Go to MainActivity
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        intent.putExtra("username", username);
-                                        startActivity(intent);
+                                            // Go to MainActivity
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            intent.putExtra("username", username);
+                                            startActivity(intent);
+                                        }
+                                        else {
+                                            Toast.makeText(LoginActivity.this, "Incorrect Password.\nPlease try again.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        return;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    else {
-                                        Toast.makeText(LoginActivity.this, "Incorrect Password.\nPlease try again.", Toast.LENGTH_SHORT).show();
-                                    }
-                                    return;
                                 } else {
                                     Log.d(TAG,document.getId() + " => " + document.getData());
                                 }
@@ -137,7 +143,13 @@ public class LoginActivity extends AppCompatActivity {
 
         // Add new user to database
         Map<String, Object> newUser = new HashMap<>();
-        newUser.put("password", password);
+        AESCrypt aesCrypt = new AESCrypt();
+        try {
+            String passwordHash = aesCrypt.encrypt(password);
+            newUser.put("password", passwordHash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         db.collection("Users").document(username)
                 .set(newUser)
