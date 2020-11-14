@@ -5,8 +5,7 @@
 *.properties
 *.ser
 *.txt
-*.xml
-
+.idea/*
 app/build/*
 
 logs
