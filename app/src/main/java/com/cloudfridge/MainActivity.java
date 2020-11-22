@@ -1,8 +1,9 @@
 package com.cloudfridge;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -13,6 +14,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 ;
@@ -25,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
     private File createImageFile() throws IOException {
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
@@ -97,21 +96,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        File image = File.createTempFile("", ".jpg", storageDir);
+        File image = File.createTempFile("Cloud-Fridge", ".jpg", storageDir);
 
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
-    */
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        } catch (ActivityNotFoundException e) {
-        }
-        /*
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             File photoFile = null;
@@ -127,32 +119,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
-        */
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            //File uploadFile = new File(storageDir, currentPhotoPath);
-            //Log.d(TAG, "Upload File: " + uploadFile.getAbsoluteFile());
-
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String attachmentName = "bitmap";
-            String attachmentFileName = timeStamp + ".jpeg";
-            String crlf = "\r\n";
-            String twoHyphens = "--";
-            String boundary =  "*****";
-
-            HttpURLConnection httpUrlConnection = null;
-            URL url = null;
+            File uploadFile = new File(storageDir, currentPhotoPath);
+            Log.d(TAG, "Upload File: " + uploadFile.getAbsoluteFile());
             try {
-                url = new URL("https://us-central1-cloud-fridge.cloudfunctions.net/app/api/upload/" + username);
-                httpUrlConnection = (HttpURLConnection) url.openConnection();
+                Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                Log.d("BITMAP", "Width: " + imageBitmap.getWidth());
+                Log.d("BITMAP", "Height: " + imageBitmap.getHeight());
+
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String attachmentName = "bitmap";
+                String attachmentFileName = timeStamp + ".png";
+                String crlf = "\r\n";
+                String twoHyphens = "--";
+                String boundary =  "*****";
+
+                URL url = new URL("https://us-central1-cloud-fridge.cloudfunctions.net/app/api/upload/" + username);
+                HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
                 httpUrlConnection.setUseCaches(false);
                 httpUrlConnection.setDoOutput(true);
 
@@ -172,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 request.writeBytes(crlf);
 
                 ByteArrayOutputStream bao = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
                 byte[] pixels = bao.toByteArray();
 
                 request.write(pixels);
@@ -200,10 +189,6 @@ public class MainActivity extends AppCompatActivity {
                 responseStreamReader.close();
                 responseStream.close();
                 httpUrlConnection.disconnect();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
