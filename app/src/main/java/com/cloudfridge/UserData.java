@@ -2,8 +2,8 @@ package com.cloudfridge;
 import java.util.Map;
 
 public class UserData {
-    String password;
-    Map<String,Object>[] fridge_contents;
+    private String password;
+    private Map<String,Object>[] fridge_contents;
 
     public UserData(String password, Map<String,Object>[] fridge_contents){
         this.password = password;

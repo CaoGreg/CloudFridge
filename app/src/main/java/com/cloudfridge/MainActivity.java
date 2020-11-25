@@ -11,13 +11,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 ;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -26,18 +34,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    String currentPhotoPath;
-    String username;
+    private RecyclerView recyclerView;
+    private ExampleAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<ExampleItem> exampleList = new ArrayList<>();
+
+    private String currentPhotoPath;
+    private String username;
+    private  UserData data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +72,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         username = getIntent().getStringExtra("username");
+
+        try {
+            getUserInfo();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        buildRecyclerView();
     }
 
     @Override
@@ -201,6 +228,99 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < list.length; ++i) {
                         new File(storageDir, list[i]).delete();
                     }
+                }
+            }
+        }
+    }
+
+    public void buildRecyclerView() {
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        adapter = new ExampleAdapter(exampleList);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener( new ExampleAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) throws JSONException, IOException {
+                exampleList.remove(position);
+                adapter.notifyItemRemoved(position);
+
+                // Update the database
+                JSONObject obj = new JSONObject();
+                JSONArray contents = new JSONArray();
+
+                for(ExampleItem exampleItem: exampleList) {
+                    JSONObject tmp = new JSONObject();
+                    tmp.put(exampleItem.getText1(), exampleItem.getText2());
+                    contents.put(tmp);
+                }
+
+                String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/update/" + username;
+                URL urlObj = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("PUT");
+
+                obj.put("name", username);
+                obj.put("password", data.getPassword());
+                obj.put("fridge_contents", contents);
+
+                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+                wr.write(obj.toString());
+                wr.flush();
+                Log.d(TAG, "Send 'HTTP POST' request to : " + url);
+
+                Integer httpResult = connection.getResponseCode();
+                Log.d(TAG, httpResult.toString());
+
+                if(httpResult == 500) {
+                    Toast.makeText(MainActivity.this, "Request to server failed.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Log.d(TAG, "Updated user: " + username);
+                }
+            }
+        });
+    }
+
+    public void getUserInfo() throws IOException {
+        // Send HTTP Request
+        String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/read/" + username;
+        URL urlObj = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+        Log.d(TAG, "Send 'HTTP GET' request to : " + url);
+        Integer responseCode = connection.getResponseCode();
+        Log.d(TAG, "Response Code : " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader inputReader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = inputReader.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            inputReader.close();
+
+            Log.d(TAG, "Response: " + response.toString());
+            Gson gson = new Gson();
+            data = gson.fromJson(response.toString(), UserData.class);
+
+            for(int i = 0; i < data.getFridge_contents().length; i++) {
+                for (Map.Entry<String, Object> entry : data.getFridge_contents()[i].entrySet()){
+                    exampleList.add(new ExampleItem(R.drawable.common_google_signin_btn_icon_dark_normal, entry.getKey(), "Expires: " + entry.getValue().toString()));
                 }
             }
         }
