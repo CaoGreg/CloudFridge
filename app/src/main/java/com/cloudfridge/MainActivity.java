@@ -320,7 +320,21 @@ public class MainActivity extends AppCompatActivity {
 
             for(int i = 0; i < data.getFridge_contents().length; i++) {
                 for (Map.Entry<String, Object> entry : data.getFridge_contents()[i].entrySet()){
-                    exampleList.add(new ExampleItem(R.drawable.common_google_signin_btn_icon_dark_normal, entry.getKey(), "Expires: " + entry.getValue().toString()));
+                    int img_res;
+                    switch (entry.getKey()){
+                        case "Apple": img_res = R.drawable.apple;
+                            break;
+                        case "Orange": img_res = R.drawable.orange;
+                            break;
+                        case "Beef": img_res = R.drawable.beef;
+                            break;
+                        case "Chicken": img_res = R.drawable.chicken;
+                            break;
+                        default: img_res = R.drawable.common_google_signin_btn_icon_dark_normal;
+                            break;
+                    }
+
+                    exampleList.add(new ExampleItem(img_res, entry.getKey(), "Expires: " + entry.getValue().toString()));
                 }
             }
         }
