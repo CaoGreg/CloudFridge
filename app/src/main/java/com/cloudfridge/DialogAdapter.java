@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogViewHolder> {
@@ -69,10 +71,17 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                      @Override
                      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked){
+                        if (isChecked) {
                             if(!expiryEditText.getText().toString().equals("")) {
-                                selectedItems.add(new FoodModel(name.getText().toString(), expiryEditText.getText().toString()));
-                                Log.d(TAG, "Adding " + name.getText() + ", " + expiryEditText.getText());
+                                if (isValidDate(expiryEditText.getText().toString())) {
+                                    selectedItems.add(new FoodModel(name.getText().toString(), expiryEditText.getText().toString()));
+                                    Log.d(TAG, "Adding " + name.getText() + ", " + expiryEditText.getText());
+                                }
+                                else
+                                {
+                                    checkBox.setChecked(false);
+                                    Toast.makeText(itemView.getContext(), "Please enter a valid expiry date for " + name.getText(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                             else {
                                 checkBox.setChecked(false);
@@ -90,7 +99,19 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
                         }
                      }
                  }
+
             );
+        }
+
+        public boolean isValidDate(String inDate) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            dateFormat.setLenient(false);
+            try {
+                dateFormat.parse(inDate.trim());
+            } catch (ParseException pe) {
+                return false;
+            }
+            return true;
         }
     }
 }

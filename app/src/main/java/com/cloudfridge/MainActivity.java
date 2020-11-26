@@ -17,10 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
@@ -29,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
-;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,10 +43,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,11 +60,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ExampleAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<ExampleItem> exampleList = new ArrayList<>();
+    private ArrayList<ExampleItem> exampleList;
 
     private String currentPhotoPath;
     private String username;
     private  UserData data;
+
+    private String m_Response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        exampleList = new ArrayList<>();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -89,15 +94,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         buildRecyclerView();
-
-        //TODO: remove this button in main activity, trigger it from the camera
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(MainActivity.this);
-            }
-        });
     }
 
     @Override
@@ -214,8 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 request.flush();
                 request.close();
 
-                InputStream responseStream = new
-                        BufferedInputStream(httpUrlConnection.getInputStream());
+                InputStream responseStream = new BufferedInputStream(httpUrlConnection.getInputStream());
 
                 BufferedReader responseStreamReader =
                         new BufferedReader(new InputStreamReader(responseStream));
@@ -226,12 +221,17 @@ public class MainActivity extends AppCompatActivity {
                 while ((line = responseStreamReader.readLine()) != null) {
                     stringBuilder.append(line).append("\n");
                 }
-                String response = stringBuilder.toString();
-                Log.d("RESPONSE", response);
+                m_Response = stringBuilder.toString();
+                Log.d("RESPONSE", m_Response);
+                parseResponseToArray();
 
                 responseStreamReader.close();
                 responseStream.close();
                 httpUrlConnection.disconnect();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            showDialog(MainActivity.this);
         }
     }
 
@@ -273,34 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     tmp.put(exampleItem.getText1(), exampleItem.getText2());
                     contents.put(tmp);
                 }
-
-                String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/update/" + username;
-                URL urlObj = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-
-                connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestMethod("PUT");
-
-                obj.put("name", username);
-                obj.put("password", data.getPassword());
-                obj.put("fridge_contents", contents);
-
-                OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-                wr.write(obj.toString());
-                wr.flush();
-                Log.d(TAG, "Send 'HTTP POST' request to : " + url);
-
-                Integer httpResult = connection.getResponseCode();
-                Log.d(TAG, httpResult.toString());
-
-                if(httpResult == 500) {
-                    Toast.makeText(MainActivity.this, "Request to server failed.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Log.d(TAG, "Updated user: " + username);
-                }
+                updateRequest(obj, contents);
             }
         });
     }
@@ -372,9 +346,8 @@ public class MainActivity extends AppCompatActivity {
         dialog.getWindow().setAttributes(layoutParams);
 
         //TODO: Pass data here from clarifai api call
-        String[] data = new String[]{"option1","option2","option3","option3","option3","option3","option3","option3","option3","option3","option3","option3","option3"};
         RecyclerView recyclerView = dialog.findViewById(R.id.recycler);
-        DialogAdapter dialogAdapter = new DialogAdapter(MainActivity.this, data);
+        DialogAdapter dialogAdapter = new DialogAdapter(MainActivity.this, parseResponseToArray());
         recyclerView.setAdapter(dialogAdapter);
 
         Button buttonCancel = dialog.findViewById(R.id.btnCancel);
@@ -390,11 +363,39 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<FoodModel> results = dialogAdapter.getSelectedItems();
-                for(FoodModel food: results) {
-                    Log.d(TAG, food.getName());
-                    // TODO: formulate the data for the rest api, send the updated data via PUT request
+                if (!results.isEmpty())
+                {
+                    JSONObject obj = new JSONObject();
+                    JSONArray contents = new JSONArray();
+
+                    for(FoodModel food: results) {
+                        JSONObject tmp = new JSONObject();
+
+                        try {
+                            tmp.put(food.getName(), food.getExpiryDate());
+                            contents.put(tmp);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // TODO Add contents instead of replacing them.
+
+                    try {
+                        Log.d(TAG, "Sent Food: " + contents.toString());
+                        updateRequest(obj, contents);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Please select an item", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -408,5 +409,88 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    void cleanResponseString(HashSet<Character> removeCharacters)
+    {
+        Character[] response = new Character[m_Response.length()];
+        int index = 0;
+        for (int i = 0; i < m_Response.length(); i++)
+        {
+            if (!removeCharacters.contains(m_Response.charAt(i))) {
+                response[index++] = m_Response.charAt(i);
+            }
+        }
+        char[] cleanResponse = new char[index - 1];
+        Log.d(TAG, "Index: " + index);
+        for (int i = 0; i < index - 1; i++) {
+            cleanResponse[i] = response[i].charValue();
+        }
+        m_Response = new String(cleanResponse);
+        Log.d(TAG, "Clean Response: " + m_Response);
+    }
+
+    String[] parseResponseToArray()
+    {
+        HashSet<Character> removeCharacters = new HashSet<Character>();
+        removeCharacters.add('{');
+        removeCharacters.add('"');
+        removeCharacters.add('}');
+        cleanResponseString(removeCharacters);
+
+        String[] rawArray = m_Response.split("[|]");
+        String[] messageArray = new String[rawArray.length - 1];
+
+        rawArray[rawArray.length - 1] = rawArray[rawArray.length - 1].substring(0, rawArray[rawArray.length - 1].length() - 3);
+        for (int i = 1; i < rawArray.length; i++) {
+            messageArray[i - 1] = rawArray[i];
+            Log.d(TAG, "Response: " + messageArray[i - 1]);
+        }
+        ArrayList<String> labels = new ArrayList<>();
+        for (int i = 0; i < messageArray.length; i++) {
+            int index = messageArray[i].indexOf(':');
+            float accuracy = Float.parseFloat(messageArray[i].substring(index + 1, messageArray[i].length() - 1));
+            if (Float.compare(accuracy, 0.9f) >= 0)
+                labels.add(messageArray[i].substring(0, index));
+            else
+                break;
+        }
+
+        String[] responseLabels = new String[labels.size()];
+        for (int i = 0; i < labels.size(); i++) {
+            responseLabels[i] = labels.get(i);
+            Log.d(TAG, "Response Label: " + responseLabels[i]);
+        }
+        return responseLabels;
+    }
+
+    void updateRequest(JSONObject obj, JSONArray contents) throws JSONException, IOException {
+        String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/update/" + username;
+        URL urlObj = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestMethod("PUT");
+
+        obj.put("name", username);
+        obj.put("password", data.getPassword());
+        obj.put("fridge_contents", contents);
+
+        OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+        wr.write(obj.toString());
+        wr.flush();
+        Log.d(TAG, "Send 'HTTP POST' request to : " + url);
+
+        Integer httpResult = connection.getResponseCode();
+        Log.d(TAG, httpResult.toString());
+
+        if(httpResult == 500) {
+            Toast.makeText(MainActivity.this, "Request to server failed.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Log.d(TAG, "Updated user: " + username);
+        }
     }
 }
