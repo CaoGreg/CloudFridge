@@ -1,5 +1,8 @@
 package com.cloudfridge;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,12 +10,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
@@ -46,6 +54,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static Dialog dialog;
 
     private RecyclerView recyclerView;
     private ExampleAdapter adapter;
@@ -66,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                dispatchTakePictureIntent();
-            }
+            public void onClick(View view) { dispatchTakePictureIntent(); }
         });
 
         username = getIntent().getStringExtra("username");
@@ -82,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         buildRecyclerView();
+
+        //TODO: remove this button in main activity, trigger it from the camera
+        Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(MainActivity.this);
+            }
+        });
     }
 
     @Override
@@ -338,5 +354,59 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void showDialog(Activity activity) {
+        dialog = new Dialog(activity);
+        // dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_recycler);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        int dialogWindowWidth = (int) (displayWidth * 0.99f);
+        layoutParams.width = dialogWindowWidth;
+        dialog.getWindow().setAttributes(layoutParams);
+
+        //TODO: Pass data here from clarifai api call
+        String[] data = new String[]{"option1","option2","option3","option3","option3","option3","option3","option3","option3","option3","option3","option3","option3"};
+        RecyclerView recyclerView = dialog.findViewById(R.id.recycler);
+        DialogAdapter dialogAdapter = new DialogAdapter(MainActivity.this, data);
+        recyclerView.setAdapter(dialogAdapter);
+
+        Button buttonCancel = dialog.findViewById(R.id.btnCancel);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button buttonOk = dialog.findViewById(R.id.btnOK);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<FoodModel> results = dialogAdapter.getSelectedItems();
+                for(FoodModel food: results) {
+                    Log.d(TAG, food.getName());
+                    // TODO: formulate the data for the rest api, send the updated data via PUT request
+                }
+                dialog.dismiss();
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dialog.show();
     }
 }

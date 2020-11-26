@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
