@@ -182,6 +182,7 @@ public class LoginActivity extends AppCompatActivity {
 
         JSONObject obj = new JSONObject();
         JSONArray contents = new JSONArray();
+        JSONArray dates = new JSONArray();
 
         try {
             String passwordHash = get_SHA_512_SecurePassword(password, "yourmom");
@@ -189,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
             obj.put("name", username);
             obj.put("password", passwordHash);
             obj.put("fridge_contents", contents);
+            obj.put("upload_date", dates);
 
             OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
             wr.write(obj.toString());

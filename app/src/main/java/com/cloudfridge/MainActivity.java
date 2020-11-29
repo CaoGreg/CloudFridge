@@ -2,10 +2,10 @@ package com.cloudfridge;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,12 +45,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private  UserData data;
 
     private String m_Response;
+    private String m_ImageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +118,13 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             Log.d(TAG, "Logging out user " + getIntent().getStringExtra("username"));
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.action_generate_recipes) {
+            Log.d(TAG, "Generating recipes for " + username);
+            Intent intent = new Intent(getApplicationContext(), RecipeActivity.class);
+            intent.putExtra("username", username);
             startActivity(intent);
         }
 
@@ -174,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String attachmentName = "bitmap";
-                String attachmentFileName = timeStamp + ".png";
+                m_ImageName = timeStamp + ".png";
                 String crlf = "\r\n";
                 String twoHyphens = "--";
                 String boundary =  "*****";
@@ -196,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 request.writeBytes(twoHyphens + boundary + crlf);
                 request.writeBytes("Content-Disposition: form-data; name=\"" +
                         attachmentName + "\";filename=\"" +
-                        attachmentFileName + "\"" + crlf);
+                        m_ImageName + "\"" + crlf);
                 request.writeBytes(crlf);
 
                 ByteArrayOutputStream bao = new ByteArrayOutputStream();
@@ -268,18 +275,25 @@ public class MainActivity extends AppCompatActivity {
                 // Update the database
                 JSONObject obj = new JSONObject();
                 JSONArray contents = new JSONArray();
+                JSONArray dates = new JSONArray();
 
                 for(ExampleItem exampleItem: exampleList) {
                     JSONObject tmp = new JSONObject();
-                    tmp.put(exampleItem.getText1(), exampleItem.getText2());
+                    JSONObject date = new JSONObject();
+                    String[] rawArray = exampleItem.getText2().split("[ ]");
+                    tmp.put(exampleItem.getText1(), rawArray[1]);
+                    date.put(exampleItem.getText1(), exampleItem.getDate());
                     contents.put(tmp);
+                    dates.put(date);
                 }
-                updateRequest(obj, contents);
+                updateRequest(obj, contents, dates);
             }
         });
     }
 
     public void getUserInfo() throws IOException {
+        exampleList.clear();
+
         // Send HTTP Request
         String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/read/" + username;
         URL urlObj = new URL(url);
@@ -308,23 +322,24 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = new Gson();
             data = gson.fromJson(response.toString(), UserData.class);
 
+            HashMap<String, Drawable> urls = new HashMap<>();
             for(int i = 0; i < data.getFridge_contents().length; i++) {
-                for (Map.Entry<String, Object> entry : data.getFridge_contents()[i].entrySet()){
-                    int img_res;
-                    switch (entry.getKey()){
-                        case "Apple": img_res = R.drawable.apple;
-                            break;
-                        case "Orange": img_res = R.drawable.orange;
-                            break;
-                        case "Beef": img_res = R.drawable.beef;
-                            break;
-                        case "Chicken": img_res = R.drawable.chicken;
-                            break;
-                        default: img_res = R.drawable.common_google_signin_btn_icon_dark_normal;
-                            break;
+                ArrayList<String> keys = new ArrayList<>(data.getFridge_contents()[i].keySet());
+                for (String key : keys) {
+                    String imageURL = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/read/dates/" +
+                            username + "/" + data.get_Upload_Dates()[i].get(key).toString();
+                    if (urls.get(url) == null) {
+                        Log.d(TAG, "Image: " + imageURL);
+                        Drawable drawable = LoadImageFromWebOperations(imageURL);
+                        urls.put(imageURL, drawable);
+                        exampleList.add(new ExampleItem(drawable, key, "Expires: " + data.getFridge_contents()[i].get(key).toString(),
+                                data.get_Upload_Dates()[i].get(key).toString()));
                     }
-
-                    exampleList.add(new ExampleItem(img_res, entry.getKey(), "Expires: " + entry.getValue().toString()));
+                    else
+                    {
+                        exampleList.add(new ExampleItem(urls.get(url), key, "Expires: " + data.getFridge_contents()[i].get(key).toString(),
+                                data.get_Upload_Dates()[i].get(key).toString()));
+                    }
                 }
             }
         }
@@ -365,31 +380,51 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<FoodModel> results = dialogAdapter.getSelectedItems();
                 if (!results.isEmpty())
                 {
-                    JSONObject obj = new JSONObject();
-                    JSONArray contents = new JSONArray();
+                    try {
+                        String response = HTTPGet();
+                        if (response != null) {
+                            JSONObject obj = new JSONObject(response);
+                            JSONArray contents = obj.getJSONArray("fridge_contents");
+                            JSONArray dates = obj.getJSONArray("upload_date");
+                            Log.d(TAG, "Received Food: " + contents.toString());
+                            Log.d(TAG, "Received Dates: " + dates.toString());
 
-                    for(FoodModel food: results) {
-                        JSONObject tmp = new JSONObject();
+                            for (FoodModel food : results) {
+                                JSONObject tmp = new JSONObject();
+                                JSONObject date = new JSONObject();
 
-                        try {
-                            tmp.put(food.getName(), food.getExpiryDate());
-                            contents.put(tmp);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                try {
+                                    tmp.put(food.getName(), food.getExpiryDate());
+                                    date.put(food.getName(), m_ImageName);
+                                    contents.put(tmp);
+                                    dates.put(date);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            try {
+                                Log.d(TAG, "Sent Food: " + contents.toString());
+                                Log.d(TAG, "Sent Dates: " + dates.toString());
+                                updateRequest(obj, contents, dates);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
                     }
 
-                    // TODO Add contents instead of replacing them.
-
                     try {
-                        Log.d(TAG, "Sent Food: " + contents.toString());
-                        updateRequest(obj, contents);
-                    } catch (JSONException e) {
+                        getUserInfo();
+                        buildRecyclerView();
+                    } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     dialog.dismiss();
                 }
                 else
@@ -464,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
         return responseLabels;
     }
 
-    void updateRequest(JSONObject obj, JSONArray contents) throws JSONException, IOException {
+    void updateRequest(JSONObject obj, JSONArray contents, JSONArray dates) throws JSONException, IOException {
         String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/update/" + username;
         URL urlObj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
@@ -477,6 +512,7 @@ public class MainActivity extends AppCompatActivity {
         obj.put("name", username);
         obj.put("password", data.getPassword());
         obj.put("fridge_contents", contents);
+        obj.put("upload_date", dates);
 
         OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
         wr.write(obj.toString());
@@ -493,4 +529,46 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Updated user: " + username);
         }
     }
+
+    String HTTPGet() throws IOException {
+        String finalResponse = null;
+        // Send HTTP Request
+        String url = "https://us-central1-cloud-fridge.cloudfunctions.net/app/api/read/" + username;
+        URL urlObj = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+        Log.d(TAG, "Send 'HTTP GET' request to : " + url);
+        Integer responseCode = connection.getResponseCode();
+        Log.d(TAG, "Response Code : " + responseCode);
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader inputReader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = inputReader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            inputReader.close();
+
+            finalResponse = response.toString();
+            Log.d(TAG, "GET Response: " + finalResponse);
+        }
+        return finalResponse;
+    }
+
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
+

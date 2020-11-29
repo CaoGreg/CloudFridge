@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogViewHolder> {
 
@@ -26,7 +27,6 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
 
 
     public DialogAdapter(Context context, String[] myImageNameList){
-
         inflater = LayoutInflater.from(context);
         this.myImageNameList = myImageNameList;
         this.selectedItems = new ArrayList<>();
@@ -38,7 +38,6 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
 
     @Override
     public DialogAdapter.DialogViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = inflater.inflate(R.layout.recycler_item, parent, false);
         DialogViewHolder holder = new DialogViewHolder(view);
 
@@ -111,6 +110,18 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
             } catch (ParseException pe) {
                 return false;
             }
+            if (isAfterToday(dateFormat.getCalendar()))
+                return true;
+            return false;
+        }
+
+        public boolean isAfterToday(Calendar date)
+        {
+            Calendar today = Calendar.getInstance();
+            if (today.getTimeInMillis() - date.getTimeInMillis() < 8.64e+7)
+                return true;
+            else if (date.before(today))
+                return false;
             return true;
         }
     }

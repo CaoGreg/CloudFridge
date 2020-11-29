@@ -74,7 +74,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
         ExampleItem currentItem = this.exampleList.get(position);
-        holder.imageView.setImageResource(currentItem.getImageResource());
+        holder.imageView.setImageDrawable(currentItem.getImageResource());
         holder.textView1.setText(currentItem.getText1());
         holder.textView2.setText(currentItem.getText2());
     }

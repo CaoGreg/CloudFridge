@@ -8,7 +8,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_logout"
+        android:id="@+id/action_generate_recipes"
         android:orderInCategory="101"
+        android:title="Generate Recipes" />
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="102"
         android:title="@string/logout" />
 </menu>
