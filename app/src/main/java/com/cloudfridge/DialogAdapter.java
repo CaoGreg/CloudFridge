@@ -103,7 +103,7 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.DialogView
         }
 
         public boolean isValidDate(String inDate) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
             dateFormat.setLenient(false);
             try {
                 dateFormat.parse(inDate.trim());

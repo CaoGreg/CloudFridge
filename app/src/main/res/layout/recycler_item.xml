@@ -36,7 +36,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginEnd="47dp"
             android:ems="10"
-            android:hint="(DD-MM-YYYY)"
+            android:hint="(MM-DD-YYYY)"
             android:inputType="date" />
 
     </RelativeLayout>
