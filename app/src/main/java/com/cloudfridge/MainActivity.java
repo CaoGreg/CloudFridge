@@ -280,8 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 for(ExampleItem exampleItem: exampleList) {
                     JSONObject tmp = new JSONObject();
                     JSONObject date = new JSONObject();
-                    String[] rawArray = exampleItem.getText2().split("[ ]");
-                    tmp.put(exampleItem.getText1(), rawArray[1]);
+                    tmp.put(exampleItem.getText1(), exampleItem.getText2());
                     date.put(exampleItem.getText1(), exampleItem.getDate());
                     contents.put(tmp);
                     dates.put(date);
@@ -332,12 +331,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "Image: " + imageURL);
                         Drawable drawable = LoadImageFromWebOperations(imageURL);
                         urls.put(imageURL, drawable);
-                        exampleList.add(new ExampleItem(drawable, key, "Expires: " + data.getFridge_contents()[i].get(key).toString(),
+                        exampleList.add(new ExampleItem(drawable, key, data.getFridge_contents()[i].get(key).toString(),
                                 data.get_Upload_Dates()[i].get(key).toString()));
                     }
                     else
                     {
-                        exampleList.add(new ExampleItem(urls.get(url), key, "Expires: " + data.getFridge_contents()[i].get(key).toString(),
+                        exampleList.add(new ExampleItem(urls.get(url), key, data.getFridge_contents()[i].get(key).toString(),
                                 data.get_Upload_Dates()[i].get(key).toString()));
                     }
                 }

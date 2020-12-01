@@ -1,5 +1,6 @@
 package com.cloudfridge;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
     private ArrayList<ExampleItem> exampleList;
@@ -76,7 +80,22 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         ExampleItem currentItem = this.exampleList.get(position);
         holder.imageView.setImageDrawable(currentItem.getImageResource());
         holder.textView1.setText(currentItem.getText1());
-        holder.textView2.setText(currentItem.getText2());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        dateFormat.setLenient(false);
+
+        try {
+            Log.d("ADAPTER", "DATE: " + currentItem.getText2());
+            dateFormat.parse(currentItem.getText2().trim());
+            Calendar today = Calendar.getInstance();
+            Calendar date = dateFormat.getCalendar();
+            long milliTime = date.getTimeInMillis() - today.getTimeInMillis();
+            Integer numberOfDays = (int)(milliTime / 8.64e+7);
+            Log.d("ADAPTER", "Number of days: " + numberOfDays);
+            holder.textView2.setText("Expires in: " + numberOfDays.toString() + " day(s)");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
