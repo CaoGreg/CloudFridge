@@ -31,7 +31,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:popupTheme="@style/Theme.CloudFridge.PopupOverlay"
-        app:title="Login Page" />
+        app:title="Login Page"
+        app:titleTextColor="#FFFFFF" />
 
     <EditText
         android:id="@+id/editTextPassword"

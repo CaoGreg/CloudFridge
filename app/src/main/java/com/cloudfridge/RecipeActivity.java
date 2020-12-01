@@ -51,10 +51,10 @@ public class RecipeActivity extends AppCompatActivity {
             String instructionsTitles = "Instructions:";
             m_InstructionTitle.setText(instructionsTitles);
 
-            String ingredients = new String();
-            String instructions = new String();
+            String ingredients = "";
+            String instructions = "";
 
-            m_Title.setText(obj.get("title").toString() + "\n");
+            m_Title.setText(obj.get("title").toString());
 
             for(Integer i = 1; i<= obj.getJSONObject("Steps").length(); i++) {
                 instructions += "Step " + i + ": "

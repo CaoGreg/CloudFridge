@@ -42,13 +42,68 @@ app.get('/api/read/:name', async (req, res) => {
 });
 
 
+// Get request: get recipes for user
+app.get('/api/read/recipes/:name', async (req, res) => {   
+    try {
+        const user_snapshot = await admin.firestore().collection('Users').doc(req.params.name).get();
+        const fridge_contents = user_snapshot.data().fridge_contents;
+
+        const recipe_snapshot = await admin.firestore().collection('Recipes').doc('Recipes').get();       
+        const recipes = recipe_snapshot.data();
+
+        var today = new Date();
+        var priority = {}
+        
+        Object.keys(recipes).forEach(function(key) {
+            priority[key] = 8
+            for (var i = 0; i < fridge_contents.length; i++) {
+                var content = fridge_contents[i];
+                Object.keys(content).forEach(function(c) {
+                    if (c.toLowerCase() in recipes[key]) {
+                        var date = new Date(content[c])
+                        var expiry = Math.round(Math.abs(today - date)/(1000 * 60 * 60 * 24))
+                        priority[key] = (expiry < priority[key]) ? expiry : priority[key]                       
+                    }
+                })
+            }
+        })
+        
+        var result = Object.keys(priority).sort(function(a, b) {
+            return priority[a] - priority[b];
+        })
+        
+        return res.status(200).send(recipes[result[0]]);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }
+});
+
+
+// Get request: get image from user
+app.get('/api/read/dates/:name/:img_name', async (req, res) => {   
+    try {      
+        const tempFilePath = path.join(os.tmpdir(),req.params.img_name);
+        const options = { destination: tempFilePath, };
+
+        file = await storage.bucket('cloud-fridge.appspot.com').file(req.params.name + '/' + req.params.img_name).download(options);
+        
+        return res.status(200).sendFile(tempFilePath);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }
+});
+
+
 // Post request: creates a new user in the database
 app.post('/api/create', async (req, res) => {    
     try {
         await admin.firestore().collection('Users').doc('/' + req.body.name + '/')
         .create({            
             password: req.body.password,
-            fridge_contents: req.body.fridge_contents
+            fridge_contents: req.body.fridge_contents,
+            upload_date: req.body.upload_date
         })
 
         return res.status(201).send();
@@ -97,7 +152,7 @@ app.post("/api/upload/:name", async (req, res) => {
                 const response = await clarifai_app.models.predict(Clarifai.FOOD_MODEL, image);
                 
                 const items = response.outputs[0].data.concepts.reduce((accumulator, item)=>{
-                    return accumulator + " " +item.name + "probability: " + item.value;
+                    return accumulator + "|" +item.name + ":" + item.value;
                 },"");
 
                 res.status(200).json({message: items,})
@@ -118,7 +173,8 @@ app.put("/api/update/:name", async (req, res) => {
     try {
         await admin.firestore().collection('Users').doc(req.params.name).update({
             password: req.body.password,
-            fridge_contents: req.body.fridge_contents
+            fridge_contents: req.body.fridge_contents,
+            upload_date: req.body.upload_date
         });
 
         return res.status(200).send();
