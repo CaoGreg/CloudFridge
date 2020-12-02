@@ -176,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Upload File: " + uploadFile.getAbsoluteFile());
             try {
                 Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+
+                // Compressing Image
                 Log.d("BITMAP", "Width: " + imageBitmap.getWidth());
                 Log.d("BITMAP", "Height: " + imageBitmap.getHeight());
 
@@ -207,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 request.writeBytes(crlf);
 
                 ByteArrayOutputStream bao = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 20 , bao);
                 byte[] pixels = bao.toByteArray();
 
                 request.write(pixels);
@@ -359,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.width = dialogWindowWidth;
         dialog.getWindow().setAttributes(layoutParams);
 
-        //TODO: Pass data here from clarifai api call
         RecyclerView recyclerView = dialog.findViewById(R.id.recycler);
         DialogAdapter dialogAdapter = new DialogAdapter(MainActivity.this, parseResponseToArray());
         recyclerView.setAdapter(dialogAdapter);
@@ -484,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < messageArray.length; i++) {
             int index = messageArray[i].indexOf(':');
             float accuracy = Float.parseFloat(messageArray[i].substring(index + 1, messageArray[i].length() - 1));
-            if (Float.compare(accuracy, 0.9f) >= 0)
+            if (Float.compare(accuracy, 0.7f) >= 0)
                 labels.add(messageArray[i].substring(0, index));
             else
                 break;
